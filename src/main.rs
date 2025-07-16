@@ -60,7 +60,7 @@ async fn main() {
         .nest_service("/", ServeDir::new("front"))
         .with_state((users.clone(), messages.clone()));
 
-    //let addr = SocketAddr::from(([192, 168, 1, 154], 3000)); //! For when I need it to run on just the network for anyone- This is the real program
+    //let addr = SocketAddr::from(([193, 178, 1, 154], 3000)); //! For when I need it to run on just the network for anyone- This is the real program us 'ip a' command yo check the real inet ip address
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000)); // For when I need to run only locally- really just for testing
     let listener = TcpListener::bind(addr).await.unwrap();
     println!("Running at http://{}", addr);
