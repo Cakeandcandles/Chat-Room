@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2d0036 0%, #0f2d1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            background: rgba(34, 0, 51, 0.85);
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.45), 0 1.5px 12px 0 #00ffb3a0;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            min-width: 340px;
+            max-width: 90vw;
+            color: #e0ffe6;
+            backdrop-filter: blur(8px);
+            animation: floaty 5s ease-in-out infinite alternate;
+        }
+        @keyframes floaty {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-18px) scale(1.03); }
+        }
+        h1 {
+            color: #b366ff;
+            text-shadow: 0 2px 12px #000, 0 0 8px #00ffb3a0;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            margin-bottom: 1.2rem;
+        }
+        input {
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: none;
+            background: rgba(0,0,0,0.18);
+            color: #e0ffe6;
+            font-size: 1.1rem;
+            box-shadow: 0 1px 8px 0 #00ffb3a0 inset;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            background: rgba(179, 102, 255, 0.18);
+            box-shadow: 0 2px 16px 0 #b366ff80 inset;
+        }
+        button {
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: none;
+            background: linear-gradient(90deg, #b366ff 0%, #00ffb3 100%);
+            color: #1a0026;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 12px 0 #00ffb3a0;
+            margin-top: 0.2rem;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        #messages {
+            margin-top: 1.2rem;
+            min-height: 2.2rem;
+            color: #b366ff;
+            text-align: center;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 8px #000;
+        }
+        #transfer {
+            margin-top: 1.2rem;
+            color: #00ffb3;
+            text-align: center;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 8px #000;
+        }
+        #sign-up-btn:hover, #skip:hover {
+            background: linear-gradient(90deg, #a04be0 0%, #00d68f 100%);
+            color: #fff;
+            transition: background 0.18s, color 0.18s;
+        }
+        #sign-up-btn:active, #skip:active {
+            transform: scale(0.94);
+            box-shadow: 0 4px 24px 0 #b366ff80, 0 0 16px #00ffb3a0;
+            filter: brightness(1.08);
+            transition: transform 0.20s cubic-bezier(.4,2,.6,1), box-shadow 0.20s, filter 0.20s;
+        }
+        button:disabled {
+            background: #222;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body> <!--This is the first page that is always shown right at the beginning-->
+    <div id="container">
+        <div style="display: flex; justify-content: center;">
+            <h1>Sign Up</h1>
+        </div>
+        <form id="signup-form">
+            <input name="username" placeholder="username" required/>
+            <input name="password" placeholder="password" required/>
+            <button type="submit" id="sign-up-btn">Sign Up</button>
+        </form>
+        <div style="display: flex; justify-content: center; margin-bottom: 1.2rem;">
+            <button id="skip" style="width: 70%; max-width: 220px;">Jump to login page</button>
+        </div>
+        <div id="messages"></div>
+        <div id="transfer"></div>
+    </div>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const username = form.username.value;
+            const password = form.password.value;
+            const messagesDiv = document.getElementById('messages');
+
+            const response = await fetch("/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const text = await response.text(); // There was a conditional checking if response was given 'ok' status, but I dont think it's needed anymore
+            messagesDiv.innerHTML = text;
+
+            if (text == "<h1>Signup successful!</h1>") { // Please don't comment this out or remove it bcs it's validating client side and that isnt really so correct
+                document.getElementById('transfer').innerHTML = "<h1>You are being taken to the sign in page</h1>";
+                document.getElementById('skip').disabled = true;
+                document.getElementById('sign-up-btn').disabled = true;
+                window.setTimeout(() => { 
+                    window.location.href = '/login.html';
+                }, 3000)
+            }
+        });
+
+        document.getElementById('skip').addEventListener('click', () => {
+            window.location.href = '/login.html';
+        })
+    </script>
+</body>
+</html>

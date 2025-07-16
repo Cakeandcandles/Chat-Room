@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2d0036 0%, #0f2d1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            background: rgba(34, 0, 51, 0.85);
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.45), 0 1.5px 12px 0 #00ffb3a0;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            min-width: 340px;
+            max-width: 90vw;
+            color: #e0ffe6;
+            backdrop-filter: blur(8px);
+            animation: floaty 5s ease-in-out infinite alternate;
+        }
+        @keyframes floaty {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-18px) scale(1.03); }
+        }
+        h1 {
+            color: #b366ff;
+            text-shadow: 0 2px 12px #000, 0 0 8px #00ffb3a0;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            margin-bottom: 1.2rem;
+        }
+        input {
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: none;
+            background: rgba(0,0,0,0.18);
+            color: #e0ffe6;
+            font-size: 1.1rem;
+            box-shadow: 0 1px 8px 0 #00ffb3a0 inset;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            background: rgba(179, 102, 255, 0.18);
+            box-shadow: 0 2px 16px 0 #b366ff80 inset;
+        }
+        button, .link-btn {
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: none;
+            background: linear-gradient(90deg, #b366ff 0%, #00ffb3 100%);
+            color: #1a0026;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 12px 0 #00ffb3a0;
+            margin-top: 0.2rem;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            display: block;
+            width: 90%;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button:disabled, .link-btn:disabled {
+            background: #222;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        button:hover, .link-btn:hover {
+            background: linear-gradient(90deg, #a04be0 0%, #00d68f 100%);
+            color: #fff;
+            transition: background 0.18s, color 0.18s;
+        }
+        #messages {
+            margin-top: 1.2rem;
+            min-height: 2.2rem;
+            color: #b366ff;
+            text-align: center;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 8px #000;
+        }
+        #test:active, .link-btn:active {
+            transform: scale(0.94);
+            box-shadow: 0 4px 24px 0 #b366ff80, 0 0 16px #00ffb3a0;
+            filter: brightness(1.08);
+            transition: transform 0.20s cubic-bezier(.4,2,.6,1), box-shadow 0.20s, filter 0.20s;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Login</h1>
+        <p>You can now login or go back to the signup page</p>
+        <form id="login-form">
+            <input name="username" placeholder="username" required/>
+            <input name="password" placeholder="password" required/>
+            <button type="submit" id="test">Login</button>
+        </form>
+        <button class="link-btn" onclick="window.location.href='/'">Go back to the signup page</button>
+        <div id="messages"></div>
+    </div>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const username = form.username.value;
+            const password = form.password.value;
+            const messagesDiv = document.getElementById('messages');
+
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const text = await response.text();
+            messagesDiv.innerHTML = text;
+
+            if (text == "<h1>Login successful</h1>") {
+                document.querySelector('.link-btn').disabled = true;
+                document.getElementById('test').disabled = true;
+                localStorage.setItem('username', username);
+                window.setTimeout(() => {
+                    window.location.href = '/chat-room.html';
+                }, 3000)
+            }
+
+        });
+    </script>
+</body>
+</html>
