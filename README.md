@@ -1,0 +1,4 @@
+A simple, real-time(ish) chat rooom built using Rust and the Axum framework for the backend, and HTML, CSS, and JS for the frontend. It supports signup, login, message posting, and all messages are saved to disk in JSON format. 
+It's perfect for running on your local network to chat with friends, family, or classmates. It's features include- user signup and login (with password hashing using bcrypt), posting and viewing chat messages, auto refreshing the message feed every 2 seconds, 
+admin-only "Clear messages" button, messages and users are stored in local jsoon files, and it's LAN accessible on your Wi-Fi network. The dependancies I used are- axum, tokio, serde, tower-http, and bcrypt. Please note that all data is stored in plaintext json 
+files like messages.json and users.json and there is no persistant session or cookie system, but the login state is tracked using localstorage in the browser.
